@@ -33,12 +33,15 @@ func GetLinuxHostPorts() ([]Port, error) {
 	if err != nil {
 		return nil, err
 	}
-	reg := regexp.MustCompile("(tcp|udp)(\\d+)\\s+\\d+\\s+\\d+\\s+(:::|0.0.0.0:)(\\d{2,5})")
+	// fmt.Println(string(output))
+	reg := regexp.MustCompile("(tcp|tcp6|udp)\\s+\\d+\\s+\\d+\\s+(:::|0.0.0.0:)(\\d{2,5})")
+	//"(tcp|udp)(\\d+)\\s+\\d+\\s+\\d+\\s+(:::|0.0.0.0:)(\\d{2,5})"
 	rets := reg.FindAllStringSubmatch(string(output), -1)
 	var linuxPorts []Port
 	for _, ret := range rets {
 		duplicated := false
-		p, _ := strconv.ParseInt(ret[4], 10, 0)
+		p, _ := strconv.ParseInt(ret[3], 10, 0)
+		// p, _ := strconv.ParseInt(ret[4], 10, 0)
 		for _, find := range linuxPorts {
 			if find.Port == p {
 				duplicated = true

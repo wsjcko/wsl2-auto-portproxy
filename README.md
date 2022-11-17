@@ -35,17 +35,22 @@ wslpp start an interval to get IP address of the nat interface and scan all port
 ## Configuration
 Support custom configuration by a json file, which must be placed in `%HOMEPATH%/.wslpp/config.json`, the `.wslpp` dir will be created automatically by wslpp when it runs, but the json file should be created by yourself.    
 Example:
+/mnt/c/Users/wsjcko/.wslpp/config.json
 ```json
 {
   "onlyPredefined": true,
   "predefined": {
     "tcp": [
-      "666:22"
+      "666:22",
+      "21001:21001",
+      "11001:11001",
+      "9302:9302",
+      "9001:9001"
     ]
   },
   "ignore": {
     "tcp": [
-      445
+      99999
     ]
   }
 }
@@ -55,6 +60,23 @@ Example:
 * ignore: If defined, will ignore the port in linux. Must be a number array in the sub field name `tcp`. 
 
 **Note: If port is already use by another program in windows, the port will be omitted**
+
+## MyChange 
+wsl2-auto-portproxy/lib/service/service.go
+func GetLinuxHostPorts:
+reg := regexp.MustCompile("(tcp|tcp6|udp)\\s+\\d+\\s+\\d+\\s+(:::|0.0.0.0:)(\\d{2,5})")
+......
+p, _ := strconv.ParseInt(ret[3], 10, 0)
+
+## MyCMD
+netstat -nao | findstr 21001
+tasklist | findstr pid
+tasklist | findstr wslpp
+taskkill /f /t /im wslpp.exe
+
+
+powershell:
+Start-Process -WindowStyle Hidden -FilePath 'D:\wsl2-auto-portproxy\dist\wslpp.exe'
 
 ## License
 MIT
